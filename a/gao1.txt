@@ -1,0 +1,31 @@
+我们都是这样的
+master 用于发布
+devel 用户主要开发点
+新功能，开个功能名的分支，这个分支不 push，写好后:
+(my_branch) $ git add .
+(my_branch) $ git commit -m "..."
+(my_branch) $ git checkout devel
+(devel) $ git pull origin devel
+(devel) $ git merge my_branch 
+(devel) $ git push origin devel
+自己合并到 devel 分支，合并只是简单的 merge 就好了，没有遇到问题
+
+用fetch 下来以后手动合并或者重新checkout -B 丢弃本地分支, 我总觉得pull 容易出问题 
+
+pull时想要不出现merge commit，只要保证master始终与代码库中是fast-forward的即可。
+本地分支开发完后，切换到master分支pull代码库(已经其他人的提交)，然后在切换到本地分支rebase，最后再merge回master分支，push。
+如果是两个人同时在一个特性分支上开发，道理一样。
+
+同分支总是 git pull --rebase origin xxx, 
+合并分支总是 git merge --no-ff xxx 禁止 rebase
+
+我觉得是一开始没有协调好……
+将分支划分为两类：主干（dev/master）和功能（featureXX）
+不同开发人员之间通过主干分支交换代码。比如我写了 featureA，另一个人在写 featureB，如果他依赖我在 featureA 里新写的代码，必须按照以下流程合并进度：
+    我 git merge featureA 到 dev，然后
+    另一个开发者在 featureB 分支执行 git rebase dev
+    featureB 完成之后再 git merge featureB 到 dev
+
+基本只用 git rebase master
+其他时候都merge 
+
